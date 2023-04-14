@@ -1,0 +1,33 @@
+{
+    "name": "the-pymp-method",
+    "version": "1.0.0",
+    "description": "A web application to manage items and their costs using the PYMP Method",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "dev": "nodemon app.js"
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^1.25.2",
+        "dotenv": "^10.0.0",
+        "ejs": "^3.1.6",
+        "express": "^4.18.2",
+        "supabase": "^1.50.4",
+        "tailwindcss": "^2.2.19"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.12"
+    },
+    "engines": {
+        "node": ">=14"
+    },
+    "keywords": [
+        "pymp",
+        "method",
+        "cost",
+        "management",
+        "supabase"
+    ],
+    "author": "",
+    "license": "ISC"
+}
