@@ -1,0 +1,1 @@
+[{"cost": 10, "format": "fraction", "id": 1, "name": "Chicken"}, {"cost": 25, "format": "decimal", "id": 2, "name": "Item B"}, {"cost": 40, "format": "fraction", "id": 3, "name": "Item C"}, {"cost": 100, "format": "decimal", "id": 4, "name": "Item D"}, {"id": 5, "name": "egg", "cost": 0.22, "format": "decimal"}]
