@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - The PYMP Method</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-md">
+            <h2 class="text-2xl mb-4">Login to The PYMP Method</h2>
+            <button id="google-login" class="bg-blue-500 text-white w-full py-2 rounded">Login with Google</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.29.0/dist/umd/supabase.dev.js"></script>
+    <script>
+        const supabaseUrl = 'https://ythsyfvsbxedhfzeczsr.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0aHN5ZnZzYnhlZGhmemVjenNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE1MDEwNjYsImV4cCI6MTk5NzA3NzA2Nn0.l49PRyS8Xuvp-ZJEkU33c86-sQ6QNpSSGaMmjAhWKkE';
+        const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
+
+        document.getElementById('google-login').addEventListener('click', async () => {
+            const { error } = await supabase.auth.signIn({ provider: 'google' });
+            if (error) console.log('Error logging in:', error.message);
+        });
+
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN') {
+                window.location.href = '/';
+            }
+        });
+    </script>
+</body>
+</html>

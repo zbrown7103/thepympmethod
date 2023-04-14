@@ -1,3 +1,6 @@
+const { supabase } = require('./supabase');
+app.use(supabase.auth.api.middleware);
+
 require('dotenv').config();
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
@@ -22,9 +25,13 @@ app.use(express.static('public'));
 const itemsRouter = require('./routes/items');
 app.use('/items', itemsRouter);
 
-// Home route
-app.get('/', (req, res) => {
-  res.render('index', { pageTitle: 'The PYMP Method', pageSubtitle: 'Perceive Your Money\'s Potential' });
+app.get('/', async (req, res) => {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+  if (user) {
+      res.render('index');
+  } else {
+      res.redirect('/login');
+  }
 });
 
 // Start the server
@@ -32,3 +39,8 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+app.get('/login', (req, res) => {
+  res.render('auth/login');
+});
+

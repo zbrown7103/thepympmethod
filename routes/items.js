@@ -36,3 +36,21 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+router.post('/add', async (req, res) => {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+  if (!user) {
+      return res.status(401).send('Unauthorized');
+  }
+
+  // Rest of the route logic
+});
+
+router.post('/edit/:id', async (req, res) => {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+  if (!user) {
+      return res.status(401).send('Unauthorized');
+  }
+
+  // Rest of the route logic
+});
