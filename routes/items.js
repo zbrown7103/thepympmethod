@@ -15,19 +15,17 @@ router.get('/', async (req, res) => {
 
 // Add a new item
 router.post('/', async (req, res) => {
-  // TODO: Implement adding an item
-});
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+  if (!user) {
+    return res.status(401).send('Unauthorized');
+  }
 
-// Update an item
-router.put('/:id', async (req, res) => {
-  // TODO: Implement updating an item
-});
+  const { name, cost, format } = req.body;
 
-// Delete an item
-router.delete('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { data, error } = await supabase.from('items').delete().eq('id', id);
+    const { data, error } = await supabase
+      .from('items')
+      .insert([{ name, cost, format }]);
     if (error) throw error;
     res.json(data);
   } catch (error) {
@@ -35,44 +33,49 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
-
-router.post('/add', async (req, res) => {
+// Update an item
+router.put('/:id', async (req, res) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
   if (!user) {
-      return res.status(401).send('Unauthorized');
+    return res.status(401).send('Unauthorized');
   }
 
-  // Rest of the route logic
-});
+  const { id } = req.params;
+  const { name, cost, format } = req.body;
 
-router.post('/edit/:id', async (req, res) => {
-  const { user } = await supabase.auth.api.getUserByCookie(req);
-  if (!user) {
-      return res.status(401).send('Unauthorized');
+  try {
+    const { data, error } = await supabase
+      .from('items')
+      .update({ name, cost, format })
+      .eq('id', id);
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  // Rest of the route logic
 });
 
-
-router.post('/delete/:id', async (req, res) => {
+// Delete an item
+router.delete('/:id', async (req, res) => {
   const { user } = await supabase.auth.api.getUserByCookie(req);
   if (!user) {
-      return res.status(401).send('Unauthorized');
+    return res.status(401).send('Unauthorized');
   }
 
   const id = req.params.id;
 
   const { data, error } = await supabase
-      .from('items')
-      .delete()
-      .eq('id', id);
+    .from('items')
+    .delete()
+    .eq('id', id);
 
   if (error) {
-      console.error('Error deleting item:', error.message);
-      return res.status(500).send('Error deleting item');
+    console.error('Error deleting item:', error.message);
+    return res.status(500).send('Error deleting item');
   }
 
   res.status(200).send('Item deleted');
 });
+
+
+module.exports = router;

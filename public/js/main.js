@@ -5,108 +5,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = '/login';
   } else {
     const supabaseUrl = 'https://ythsyfvsbxedhfzeczsr.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0aHN5ZnZzYnhlZGhmemVjenNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE1MDEwNjYsImV4cCI6MTk5NzA3NzA2Nn0.l49PRyS8Xuvp-ZJEkU33c86-sQ6QNpSSGaMmjAhWKkE';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const itemsTable = document.getElementById('itemsTable');
-      const addItemButton = document.getElementById('addItem');
-
-      // Fetch items from the API and display them in the table
-      async function fetchItems() {
-        try {
-          const response = await fetch('/items');
-          const items = await response.json();
-          displayItems(items);
-        } catch (error) {
-          console.error('Failed to fetch items:', error);
-        }
-      }
-
-      function displayItems(items) {
-        itemsTable.innerHTML = '';
-
-        items.forEach((item) => {
-          const tr = document.createElement('tr');
-
-          const nameTd = document.createElement('td');
-          nameTd.textContent = item.name;
-
-          const formatTd = document.createElement('td');
-          formatTd.textContent = item.format;
-
-          const actionsTd = document.createElement('td');
-
-          const editBtn = document.createElement('button');
-          editBtn.textContent = 'Edit';
-          editBtn.className = 'bg-yellow-500 text-white px-2 py-1 rounded mr-2';
-          editBtn.addEventListener('click', () => editItem(item));
-
-          const deleteBtn = document.createElement('button');
-          deleteBtn.textContent = 'Delete';
-          deleteBtn.className = 'bg-red-500 text-white px-2 py-1 rounded';
-          deleteBtn.addEventListener('click', () => deleteItem(item.id));
-
-          actionsTd.appendChild(editBtn);
-          actionsTd.appendChild(deleteBtn);
-
-          tr.appendChild(nameTd);
-          tr.appendChild(formatTd);
-          tr.appendChild(actionsTd);
-
-          itemsTable.appendChild(tr);
-        });
-      }
-
-
-      async function deleteItem(itemId) {
-        try {
-          const response = await fetch(`/items/${itemId}`, {
-            method: 'DELETE',
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to delete item');
-          }
-
-          // Refresh items
-          fetchItems();
-        } catch (error) {
-          console.error('Failed to delete item:', error);
-        }
-      }
-
-      // Call fetchItems on page load
-      fetchItems();
-    });
-
-
+    const supabaseKey = '...';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Check if the user is already signed in
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN') {
-        console.log('User signed in:', session.user.email);
-      } else if (event === 'SIGNED_OUT') {
-        console.log('User signed out');
-      }
-    });
+    const itemsTable = document.getElementById('itemsTable');
+    const addItemButton = document.getElementById('addItem');
 
-    // Add a function to handle Google Sign-In
-    async function signInWithGoogle() {
-      const { error } = await supabase.auth.signIn({ provider: 'google' });
-      if (error) console.error('Error signing in with Google:', error);
+    // Fetch items from the API and display them in the table
+    async function fetchItems() {
+      try {
+        const response = await fetch('/items');
+        const items = await response.json();
+        displayItems(items);
+      } catch (error) {
+        console.error('Failed to fetch items:', error);
+      }
     }
 
-    // Call this function when the user clicks the "Sign in with Google" button
-    signInWithGoogle();
+    function displayItems(items) {
+      itemsTable.innerHTML = '';
 
+      items.forEach((item) => {
+        const tr = document.createElement('tr');
 
-    // ... (existing code)
+        const nameTd = document.createElement('td');
+        nameTd.textContent = item.name;
 
-    // Add event listener to the "Add Item" button
-    addItemButton.addEventListener('click', () => {
-      openItemModal('Add', {}, addItem);
-    });
+        const formatTd = document.createElement('td');
+        formatTd.textContent = item.format;
+
+        const actionsTd = document.createElement('td');
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+        editBtn.className = 'bg-yellow-500 text-white px-2 py-1 rounded mr-2';
+        editBtn.addEventListener('click', () => editItem(item));
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.className = 'bg-red-500 text-white px-2 py-1 rounded';
+        deleteBtn.addEventListener('click', () => deleteItem(item.id));
+
+        actionsTd.appendChild(editBtn);
+        actionsTd.appendChild(deleteBtn);
+
+        tr.appendChild(nameTd);
+        tr.appendChild(formatTd);
+        tr.appendChild(actionsTd);
+
+        itemsTable.appendChild(tr);
+      });
+    }
+
+    async function deleteItem(itemId) {
+      try {
+        const response = await fetch(`/items/${itemId}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete item');
+        }
+
+        // Refresh items
+        fetchItems();
+      } catch (error) {
+        console.error('Failed to delete item:', error);
+      }
+    }
 
     function openItemModal(action, item, onSubmit) {
       const modal = document.createElement('div');
@@ -221,31 +187,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
 
-    // ... (existing code)
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN') {
+        console.log('User signed in:', session.user.email);
+      } else if (event === 'SIGNED_OUT') {
+        console.log('User signed out');
+      }
+    });
+
+    // Call fetchItems on page load
+    fetchItems();
+
+    // Add event listener to the "Add Item" button
+    addItemButton.addEventListener('click', () => {
+      openItemModal('Add', {}, addItem);
+    });
   }
 });
-
-// Add a click event listener for all delete buttons
-document.querySelectorAll('.delete-button').forEach((button) => {
-  button.addEventListener('click', async (event) => {
-      const id = event.target.dataset.id;
-
-      const response = await fetch(`/items/delete/${id}`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-      });
-
-      if (response.ok) {
-          // Remove the item row from the table
-          const row = document.getElementById(`item-${id}`);
-          row.remove();
-      } else {
-          alert('Error deleting item');
-      }
-  });
-});
-
-
-
