@@ -54,3 +54,25 @@ router.post('/edit/:id', async (req, res) => {
 
   // Rest of the route logic
 });
+
+
+router.post('/delete/:id', async (req, res) => {
+  const { user } = await supabase.auth.api.getUserByCookie(req);
+  if (!user) {
+      return res.status(401).send('Unauthorized');
+  }
+
+  const id = req.params.id;
+
+  const { data, error } = await supabase
+      .from('items')
+      .delete()
+      .eq('id', id);
+
+  if (error) {
+      console.error('Error deleting item:', error.message);
+      return res.status(500).send('Error deleting item');
+  }
+
+  res.status(200).send('Item deleted');
+});

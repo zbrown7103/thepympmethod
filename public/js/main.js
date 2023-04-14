@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  const { user } = await supabase.auth.api.getUserByCookie();
+  const { user } = await supabase.auth.getUserByCookie();
   if (!user) {
     alert('You must be logged in to access this page.');
     window.location.href = '/login';
@@ -224,5 +224,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ... (existing code)
   }
 });
+
+// Add a click event listener for all delete buttons
+document.querySelectorAll('.delete-button').forEach((button) => {
+  button.addEventListener('click', async (event) => {
+      const id = event.target.dataset.id;
+
+      const response = await fetch(`/items/delete/${id}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+
+      if (response.ok) {
+          // Remove the item row from the table
+          const row = document.getElementById(`item-${id}`);
+          row.remove();
+      } else {
+          alert('Error deleting item');
+      }
+  });
+});
+
 
 
